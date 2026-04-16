@@ -13,6 +13,7 @@ app.use(express.json());
 app.use(cors({
     origin: [
         "http://localhost:5173",
+        "https://perles-wons.vercel.app/",
         "https://perles-wons-admin.vercel.app",
         "https://perles-wons.vercel.app"
     ],
