@@ -20,8 +20,7 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "auth-token"]
 }));
 
-// IMPORTANT: handle preflight requests
-app.options("/*", cors());
+
 // ================= PORT =================
 const port = process.env.PORT || 4000;
 
