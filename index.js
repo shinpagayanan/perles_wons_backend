@@ -21,8 +21,7 @@ app.use(cors({
 }));
 
 // IMPORTANT: handle preflight requests
-app.options("*", cors());
-
+app.options("/*", cors());
 // ================= PORT =================
 const port = process.env.PORT || 4000;
 
