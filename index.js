@@ -10,7 +10,14 @@ const cors = require("cors");
 
 // ================= MIDDLEWARE =================
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: [
+        "http://localhost:5173",
+        "https://perles-wons-backend.onrender.com"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "auth-token"]
+}));
 
 // ================= PORT =================
 const port = process.env.PORT || 4000;
