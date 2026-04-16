@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const cors = require("cors");
-const cloudinary = require("./cloudinary");
+const cloudinary = require("./config/cloudinary");
 
 // ================= MIDDLEWARE =================
 app.use(express.json());
