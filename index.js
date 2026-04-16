@@ -13,11 +13,15 @@ app.use(express.json());
 app.use(cors({
     origin: [
         "http://localhost:5173",
-        "https://perles-wons-backend.onrender.com"
+        "https://perles-wons-admin.vercel.app",
+        "https://perles-wons.vercel.app"
     ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "auth-token"]
 }));
+
+// IMPORTANT: handle preflight requests
+app.options("*", cors());
 
 // ================= PORT =================
 const port = process.env.PORT || 4000;
