@@ -23,6 +23,7 @@ app.use("/images", express.static("upload/images", {
     setHeaders: (res) => {
         res.setHeader("Access-Control-Allow-Origin", "*");
         res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+        res.setHeader("Cross-Origin-Embedder-Policy", "credentialless");
     }
 }));
 
@@ -81,8 +82,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Serve images
-app.use("/images", express.static("upload/images"));
+
 
 // Upload endpoint
 app.post("/upload", upload.single("product"), (req, res) => {
