@@ -19,7 +19,12 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "auth-token"]
 }));
-
+app.use("/images", express.static("upload/images", {
+    setHeaders: (res) => {
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    }
+}));
 
 // ================= PORT =================
 const port = process.env.PORT || 4000;
