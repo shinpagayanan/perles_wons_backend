@@ -5,8 +5,8 @@ const app = express();
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
-const path = require("path");
 const cors = require("cors");
+const cloudinary = require("./cloudinary");
 
 // ================= MIDDLEWARE =================
 app.use(express.json());
@@ -67,38 +67,44 @@ app.post("/addproduct", async (req, res) => {
   res.json({ success: true, name: req.body.name });
 });
 
-// ================= IMAGE STORAGE (TEMP - NOT PRODUCTION SAFE) =================
-const storage = multer.diskStorage({
-  destination: "./upload/images",
-  filename: (req, file, cb) => {
-    cb(
-      null,
-      `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`
-    );
-  }
-});
-
+// ================= CLOUDINARY UPLOAD =================
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// ⚠️ STATIC IMAGE SERVER (WILL NOT WORK LONG TERM ON RENDER)
-app.use("/images", express.static("upload/images"));
+app.post("/upload", upload.single("product"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "No file uploaded" });
+    }
 
-// ================= UPLOAD IMAGE =================
-app.post("/upload", upload.single("product"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ success: 0, message: "No file uploaded" });
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: "products" },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+
+      stream.end(req.file.buffer);
+    });
+
+    res.json({
+      success: true,
+      image_url: result.secure_url
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
   }
-
-  res.json({
-    success: 1,
-    image_url: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
-  });
 });
 
 // ================= REMOVE PRODUCT =================
 app.post("/removeproduct", async (req, res) => {
   await Product.findOneAndDelete({ id: req.body.id });
-  res.json({ success: true, name: req.body.name });
+  res.json({ success: true });
 });
 
 // ================= GET ALL PRODUCTS =================
